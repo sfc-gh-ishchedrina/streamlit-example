@@ -38,3 +38,21 @@ st.altair_chart(alt.Chart(df, height=700, width=700)
         color=alt.Color("idx", legend=None, scale=alt.Scale()),
         size=alt.Size("rand", legend=None, scale=alt.Scale(range=[1, 150])),
     ))
+
+secret_file_path = st.secrets["connections"]["snowflake"]["private_key_file_path"]
+with open(secret_file_path, "rb") as key:
+p_key= serialization.load_pem_private_key(
+    key.read(),
+    password=None,
+    backend=default_backend()
+)
+
+pkb = p_key.private_bytes(
+    encoding=serialization.Encoding.DER,
+    format=serialization.PrivateFormat.PKCS8,
+    encryption_algorithm=serialization.NoEncryption())
+
+conn = st.connection("snowflake", private_key=pkb)
+conn.cursor().execute('use database FREE_DATASET_GZTSZAS2KF7')
+query = conn.query('select * from SCHEMA.TABLE limit 10;');
+st.dataframe(query)
