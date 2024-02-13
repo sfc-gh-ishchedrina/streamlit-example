@@ -41,11 +41,11 @@ st.altair_chart(alt.Chart(df, height=700, width=700)
 
 secret_file_path = st.secrets["connections"]["snowflake"]["private_key_file_path"]
 with open(secret_file_path, "rb") as key:
-  p_key = serialization.load_pem_private_key(
-    key.read(),
-    password=None,
-    backend=default_backend()
-  )
+    p_key = serialization.load_pem_private_key(
+        key.read(),
+        password=None,
+        backend=default_backend()
+    )
 
   pkb = p_key.private_bytes(
     encoding=serialization.Encoding.DER,
